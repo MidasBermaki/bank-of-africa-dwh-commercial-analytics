@@ -4,13 +4,22 @@ DDL Script ( Data Definition Language script) : Création des tables du schéma 
 ===================================================================================================================
 Objectif du script :
     Ce script crée les tables dans le schéma 'bronze', en supprimant les tables 
-    existantes si elles sont déjà présentes.
+    existantes si elles sont déja présentes.
     Exécutez ce script pour redéfinir la structure DDL des tables du schéma 'bronze'.
+===================================================================================================================
+===================================================================================================================
+DDL Script (Data Definition Language script): Creation of the Bronze Schema Tables
+===================================================================================================================
+Script Objective:
+    This script creates the tables in the 'bronze' schema, dropping the existing tables
+    if they are already present.
+    Run this script to redefine the DDL structure of the tables in the 'bronze' schema.
 ===================================================================================================================
 */
 -------------------------------------------------------------------------------------------------------------------
------ Création des tables EnCours Produit Type: Excédents de Trésorerie (Dépôt), selon les agences (Source CRM)
+----- Création des tables EnCours Produit Type: Excédents de Trésorerie (Dépot), selon les agences (Source CRM)
 -------------------------------------------------------------------------------------------------------------------
+
 
 IF OBJECT_ID('bronze.crm_caf_1_en_cours_depot', 'U') IS NOT NULL
     DROP TABLE bronze.crm_caf_1_en_cours_depot;
@@ -21,7 +30,7 @@ CREATE TABLE bronze.crm_caf_1_en_cours_depot (
     id_entreprise       NVARCHAR(50),
     id_produit          NVARCHAR(20),
     devise              NVARCHAR(10),
-    source_donnée       NVARCHAR(20),
+    source_donnee       NVARCHAR(20),
     date_saisie         DATE,
     statut              NVARCHAR(20),
     solde               BIGINT,
@@ -110,7 +119,7 @@ CREATE TABLE bronze.crm_caf_6_en_cours_depot (
 GO
 
 -------------------------------------------------------------------------------------------------------------------
------ Création des tables EnCours Produit Type: Crédits d’Investissement, selon les agences (Source CRM)
+----- Cr�ation des tables EnCours Produit Type: Cr�dits d�Investissement, selon les agences (Source CRM)
 -------------------------------------------------------------------------------------------------------------------
 
 IF OBJECT_ID('bronze.crm_caf_1_en_cours_cmlt', 'U') IS NOT NULL
@@ -126,7 +135,7 @@ CREATE TABLE bronze.crm_caf_1_en_cours_cmlt (
     date_saisie         DATE,
     statut              NVARCHAR(20),
     montant_autorise    BIGINT,
-    déblockage          BIGINT,
+    deblockage          BIGINT,
     amortisement        BIGINT,
     solde               BIGINT,
     taux_credit         DECIMAL(10,4)
@@ -146,7 +155,7 @@ CREATE TABLE bronze.crm_caf_2_en_cours_cmlt (
     date_saisie         DATE,
     statut              NVARCHAR(20),
     montant_autorise    BIGINT,
-    déblockage          BIGINT,
+    deblockage          BIGINT,
     amortisement        BIGINT,
     solde               BIGINT,
     taux_credit         DECIMAL(10,4)
@@ -166,7 +175,7 @@ CREATE TABLE bronze.crm_caf_3_en_cours_cmlt (
     date_saisie         DATE,
     statut              NVARCHAR(20),
     montant_autorise    BIGINT,
-    déblockage          BIGINT,
+    deblockage          BIGINT,
     amortisement        BIGINT,
     solde               BIGINT,
     taux_credit         DECIMAL(10,4)
@@ -186,7 +195,7 @@ CREATE TABLE bronze.crm_caf_4_en_cours_cmlt (
     date_saisie         DATE,
     statut              NVARCHAR(20),
     montant_autorise    BIGINT,
-    déblockage          BIGINT,
+    deblockage          BIGINT,
     amortisement        BIGINT,
     solde               BIGINT,
     taux_credit         DECIMAL(10,4)
@@ -206,7 +215,7 @@ CREATE TABLE bronze.crm_caf_5_en_cours_cmlt (
     date_saisie         DATE,
     statut              NVARCHAR(20),
     montant_autorise    BIGINT,
-    déblockage          BIGINT,
+    deblockage          BIGINT,
     amortisement        BIGINT,
     solde               BIGINT,
     taux_credit         DECIMAL(10,4)
@@ -226,7 +235,7 @@ CREATE TABLE bronze.crm_caf_6_en_cours_cmlt (
     date_saisie         DATE,
     statut              NVARCHAR(20),
     montant_autorise    BIGINT,
-    déblockage          BIGINT,
+    deblockage          BIGINT,
     amortisement        BIGINT,
     solde               BIGINT,
     taux_credit         DECIMAL(10,4)
@@ -234,7 +243,7 @@ CREATE TABLE bronze.crm_caf_6_en_cours_cmlt (
 GO
 
 -------------------------------------------------------------------------------------------------------------------
------ Création des tables EnCours Produit Type: Ligne de Fonctionnement, selon les agences (Source CRM)
+----- Cr�ation des tables EnCours Produit Type: Ligne de Fonctionnement, selon les agences (Source CRM)
 -------------------------------------------------------------------------------------------------------------------
 
 IF OBJECT_ID('bronze.crm_caf_1_en_cours_ldf', 'U') IS NOT NULL
@@ -347,61 +356,60 @@ GO
 
 --------------------------------------------------------------------------------------------------------------------------
 ----- Création des Tables des Jointures Entreprise
------ infos des produis Ligne de Fonctionnement, Crédits d’Investissement, Excédents de Trésorerie....  (Source ERP)
+----- infos des produis Ligne de Fonctionnement, Crédits d'Investissement, Excédents de Trésorerie....  (Source ERP)
 --------------------------------------------------------------------------------------------------------------------------
 ------- Entreprise Info
 --------------------------------------------------------------------------------------------------------------------------
-IF OBJECT_ID('bronze.erp_entrepise_info', 'U') IS NOT NULL
-    DROP TABLE bronze.erp_entrepise_info;
+-- Suppression de la table si elle existe déjà
+IF OBJECT_ID('bronze.erp_entreprise_info', 'U') IS NOT NULL
+    DROP TABLE bronze.erp_entreprise_info;
 GO
 
-CREATE TABLE bronze.erp_entrepise_info (
-    id_entreprise                   NVARCHAR(30),
-    raison_sociale                  NVARCHAR(100),
-    forme_juridique                 NVARCHAR(50),
-    secteur_activite                NVARCHAR(100),
-    date_creation                   DATE,
-    ville                           NVARCHAR(50),
-    pays                            NVARCHAR(50),
-    adresse                         NVARCHAR(150),
-    type_client                     NVARCHAR(20),
-    matricule_fiscale               NVARCHAR(30),
-    identifiant_commande            NVARCHAR(30),
-    date_premier_engagement         DATE,
-    score_risque                    DECIMAL(4,1),
-    note_interne                    NVARCHAR(20),
-    date_mise_a_jour                DATE,
-    id_agence                       NVARCHAR(20),
-    statut_client                   NVARCHAR(20),
-    chiffre_affaires_annuel         BIGINT,
-    effectif_employes               INT,
-    niveau_endettement              DECIMAL(5,2),
-    anciennete_relation_banque      INT,
-    rating_externe                  NVARCHAR(5),
-    is_cfc                          BIT,
-    anciennete_entreprise_mois      INT,
-    anciennete_relation_mois        INT,
-    nb_contacts_agence_mois         INT,
-    is_digital_user                 BIT,
-    digital_usage_pct               DECIMAL(5,2),
-    nb_connexions_digital_mois      INT,
-    nb_transactions_mois            INT,
-    montant_moyen_transaction       FLOAT,
-    is_seasonal_business            BIT,
-    coefficient_saisonnalite        DECIMAL(5,2),
-    mois_pic_activite               NVARCHAR(20),
-    nb_reclamations_an              INT,
-    nb_incidents_paiement           INT,
-    ca_par_employe                  FLOAT,
-    croissance_ca_annuelle_pct      DECIMAL(6,2),
-    niveau_endettement_declare      DECIMAL(6,3),
-    volatilite_revenus              DECIMAL(6,3),
-    derniere_transaction            DATE,
-    nb_produits_actifs              INT,
-    revenus_generes_banque          BIGINT
+-- Création de la table avec des types de données optimisés
+CREATE TABLE bronze.erp_entreprise_info (
+    id_entreprise                   VARCHAR(50) NOT NULL,           -- Identifiant unique (ex: CAF_1_ENT0000)
+    raison_sociale                  NVARCHAR(255),                  -- Nom de l'entreprise
+    forme_juridique                 VARCHAR(20),                    -- SARL, SA, SAS, EI
+    secteur_activite                NVARCHAR(100),                  -- Secteur d'activité
+    date_creation                   DATE,                           -- Date de création (converti depuis dd/mm/yyyy)
+    ville                           NVARCHAR(100),                  -- Ville
+    pays                            NVARCHAR(100),                  -- Pays
+    adresse                         NVARCHAR(500),                  -- Adresse complète
+    type_client                     VARCHAR(20),                    -- Type de client (ex: PME)
+    matricule_fiscale               VARCHAR(20),                    -- Numéro matricule fiscal
+    identifiant_commande            VARCHAR(20),                    -- Identifiant commande (ex: CMD173585)
+    date_premier_engagement         DATE,                           -- Date premier engagement
+    score_risque                    DECIMAL(3,1),                   -- Score risque (ex: 5.0, 4.1)
+    note_interne                    NVARCHAR(50),                   -- Note interne (Excellent, Très Bon, Bon, etc.)
+    date_mise_a_jour                DATE,                           -- Date de mise à jour
+    id_agence                       VARCHAR(20),                    -- Identifiant agence (ex: CAF_1)
+    statut_client                   VARCHAR(20),                    -- Statut client (Actif, Prospect)
+    chiffre_affaires_annuel         DECIMAL(15,2),                  -- Chiffre d'affaires annuel
+    effectif_employes               INT,                            -- Nombre d'employés
+    niveau_endettement              DECIMAL(5,2),                   -- Niveau d'endettement (0.63, 0.4, etc.)
+    anciennete_relation_banque      TINYINT,                        -- Ancienneté relation banque (années)
+    rating_externe                  VARCHAR(5),                     -- Rating externe (B, B+, A, C, C+)
+    is_cfc                          BIT,                            -- Booléen CFC (True/False -> 1/0)
+    anciennete_entreprise_mois      SMALLINT,                       -- Ancienneté entreprise en mois
+    anciennete_relation_mois        SMALLINT,                       -- Ancienneté relation en mois
+    nb_contacts_agence_mois         TINYINT,                        -- Nombre de contacts par mois
+    is_digital_user                 BIT,                            -- Utilisateur digital (True/False -> 1/0)
+    digital_usage_pct               DECIMAL(5,1),                   -- Pourcentage d'usage digital
+    nb_connexions_digital_mois      TINYINT,                        -- Nombre de connexions digitales/mois
+    nb_transactions_mois            TINYINT,                        -- Nombre de transactions/mois
+    montant_moyen_transaction       DECIMAL(12,2),                  -- Montant moyen par transaction
+    is_seasonal_business            BIT,                            -- Activité saisonnière (True/False -> 1/0)
+    coefficient_saisonnalite        DECIMAL(5,2),                   -- Coefficient de saisonnalité
+    mois_pic_activite               TINYINT,                        -- Mois de pic d'activité (1-12)
+    nb_reclamations_an              TINYINT,                        -- Nombre de réclamations par an
+    nb_incidents_paiement           TINYINT,                        -- Nombre d'incidents de paiement
+    ca_par_employe                  DECIMAL(12,2),                  -- CA par employé
+    croissance_ca_annuelle_pct      DECIMAL(6,2),                   -- Croissance CA annuelle en %
+    niveau_endettement_declare      DECIMAL(6,3),                   -- Niveau d'endettement déclaré
+    volatilite_revenus              DECIMAL(5,3),                   -- Volatilité des revenus
+    
 );
 GO
-
 --------------------------------------------------------------------------------------------------------------------------
 ----------Agence Info
 --------------------------------------------------------------------------------------------------------------------------
@@ -438,7 +446,7 @@ CREATE TABLE bronze.erp_produit_depot_info (
 );
 GO
 --------------------------------------------------------------------------------------------------------------------------
-------- Crédits d’Investissement Famille Info
+------- Crédits d'Investissement Famille Info
 --------------------------------------------------------------------------------------------------------------------------
 
 IF OBJECT_ID('bronze.erp_produit_cmlt_info', 'U') IS NOT NULL
@@ -495,22 +503,25 @@ GO
 --------------------------------------------------------------------------------------------------------------------------
 ------- Metriques_Mensuelles Info
 --------------------------------------------------------------------------------------------------------------------------
+-- Suppression de la table si elle existe déjà
 IF OBJECT_ID('bronze.erp_metriques', 'U') IS NOT NULL
     DROP TABLE bronze.erp_metriques;
 GO
 
+-- Création de la table avec des types de données optimisés
 CREATE TABLE bronze.erp_metriques (
-    id_metrique             NVARCHAR(50),
-    id_entreprise           NVARCHAR(30),
-    annee_mois              CHAR(7),           
-    solde_moyen_depot       FLOAT,
-    utilisation_credit_pct  DECIMAL(5,2),
-    nb_operations           INT,
-    nb_contacts_agence      INT,
-    nb_connexions_digital   INT,
-    satisfaction_score      DECIMAL(3,1),
-    retard_paiement         BIT,
-    nouveau_produit         BIT,
-    reclamation             BIT
+    id_metrique                 VARCHAR(50) NOT NULL,           -- Identifiant unique (ex: MET_CAF_1_ENT0000_2025-08)
+    id_entreprise               VARCHAR(50) NOT NULL,           -- Référence vers l'entreprise (ex: CAF_1_ENT0000)
+    annee_mois                  CHAR(7) NOT NULL,               -- Format YYYY-MM (ex: 2025-08)
+    solde_moyen_depot           DECIMAL(15,2),                  -- Solde moyen des dépôts
+    utilisation_credit_pct      DECIMAL(6,2),                   -- Pourcentage d'utilisation du crédit
+    nb_operations               SMALLINT,                       -- Nombre d'opérations dans le mois
+    nb_contacts_agence          TINYINT,                        -- Nombre de contacts avec l'agence
+    nb_connexions_digital       TINYINT,                        -- Nombre de connexions digitales
+    satisfaction_score          DECIMAL(3,1),                   -- Score de satisfaction (ex: 4.2, 8.7)
+    retard_paiement             BIT NOT NULL,                   -- Retard de paiement (True/False -> 1/0)
+    nouveau_produit             BIT NOT NULL,                   -- Nouveau produit souscrit (True/False -> 1/0)
+    reclamation                 BIT NOT NULL,                   -- Réclamation dans le mois (True/False -> 1/0)
+    
 );
 GO
