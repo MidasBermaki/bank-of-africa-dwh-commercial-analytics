@@ -503,6 +503,7 @@ GO
 --------------------------------------------------------------------------------------------------------------------------
 ------- Metriques_Mensuelles Info
 --------------------------------------------------------------------------------------------------------------------------
+
 -- Suppression de la table si elle existe déjà
 IF OBJECT_ID('bronze.erp_metriques', 'U') IS NOT NULL
     DROP TABLE bronze.erp_metriques;
@@ -515,13 +516,14 @@ CREATE TABLE bronze.erp_metriques (
     annee_mois                  CHAR(7) NOT NULL,               -- Format YYYY-MM (ex: 2025-08)
     solde_moyen_depot           DECIMAL(15,2),                  -- Solde moyen des dépôts
     utilisation_credit_pct      DECIMAL(6,2),                   -- Pourcentage d'utilisation du crédit
-    nb_operations               SMALLINT,                       -- Nombre d'opérations dans le mois
-    nb_contacts_agence          TINYINT,                        -- Nombre de contacts avec l'agence
-    nb_connexions_digital       TINYINT,                        -- Nombre de connexions digitales
+    nb_operations               INT,                       -- Nombre d'opérations dans le mois
+    nb_contacts_agence          INT,                        -- Nombre de contacts avec l'agence
+    nb_connexions_digital       INT,                        -- Nombre de connexions digitales
     satisfaction_score          DECIMAL(3,1),                   -- Score de satisfaction (ex: 4.2, 8.7)
-    retard_paiement             BIT NOT NULL,                   -- Retard de paiement (True/False -> 1/0)
-    nouveau_produit             BIT NOT NULL,                   -- Nouveau produit souscrit (True/False -> 1/0)
-    reclamation                 BIT NOT NULL,                   -- Réclamation dans le mois (True/False -> 1/0)
+    retard_paiement             NVARCHAR(MAX),                   -- Retard de paiement (True/False -> 1/0)
+    nouveau_produit             NVARCHAR(MAX),                   -- Nouveau produit souscrit (True/False -> 1/0)
+    reclamation                 NVARCHAR(MAX)                 -- Réclamation dans le mois (True/False -> 1/0)
     
 );
 GO
+
