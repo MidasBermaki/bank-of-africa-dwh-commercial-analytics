@@ -388,14 +388,15 @@ BEGIN
 		SET @end_time = GETDATE();
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds';
 		PRINT '>> -------------';
+		
 		-------------------------------------------------------------------------------------
 		--- Entreprise ----------------------------------------------------------------------
 		-------------------------------------------------------------------------------------
 		SET @start_time = GETDATE();
 		PRINT '>> Truncating Table: bronze.erp_entrepise_info';
-		TRUNCATE TABLE bronze.erp_entrepise_info;
+		TRUNCATE TABLE bronze.erp_entreprise_info;
 		PRINT '>> Inserting Data Into: bronze.erp_entrepise_info';
-		BULK INSERT bronze.erp_entrepise_info
+		BULK INSERT bronze.erp_entreprise_info
 		FROM 'C:\Users\X 250\Downloads\Stage Bank of Africa\Project Bank of Africa\Data\source_ERP\entreprises2.csv'
 		WITH (
 			FIRSTROW = 2,
