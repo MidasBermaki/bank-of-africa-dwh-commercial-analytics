@@ -367,47 +367,46 @@ GO
 
 -- Création de la table avec des types de données optimisés
 CREATE TABLE bronze.erp_entreprise_info (
-    id_entreprise                   VARCHAR(50) NOT NULL,           -- Identifiant unique (ex: CAF_1_ENT0000)
-    raison_sociale                  NVARCHAR(255),                  -- Nom de l'entreprise
-    forme_juridique                 VARCHAR(20),                    -- SARL, SA, SAS, EI
-    secteur_activite                NVARCHAR(100),                  -- Secteur d'activité
-    date_creation                   DATE,                           -- Date de création (converti depuis dd/mm/yyyy)
-    ville                           NVARCHAR(100),                  -- Ville
-    pays                            NVARCHAR(100),                  -- Pays
-    adresse                         NVARCHAR(500),                  -- Adresse complète
-    type_client                     VARCHAR(20),                    -- Type de client (ex: PME)
-    matricule_fiscale               VARCHAR(20),                    -- Numéro matricule fiscal
-    identifiant_commande            VARCHAR(20),                    -- Identifiant commande (ex: CMD173585)
-    date_premier_engagement         DATE,                           -- Date premier engagement
-    score_risque                    DECIMAL(3,1),                   -- Score risque (ex: 5.0, 4.1)
-    note_interne                    NVARCHAR(50),                   -- Note interne (Excellent, Très Bon, Bon, etc.)
-    date_mise_a_jour                DATE,                           -- Date de mise à jour
-    id_agence                       VARCHAR(20),                    -- Identifiant agence (ex: CAF_1)
-    statut_client                   VARCHAR(20),                    -- Statut client (Actif, Prospect)
-    chiffre_affaires_annuel         DECIMAL(15,2),                  -- Chiffre d'affaires annuel
+    id_entreprise                   VARCHAR(50) NOT NULL, --✅          -- Identifiant unique (ex: CAF_1_ENT0000)
+    raison_sociale                  NVARCHAR(255),        --✅                  -- Nom de l'entreprise
+    forme_juridique                 VARCHAR(50),          --✅               -- SARL, SA, SAS, EI
+    secteur_activite                NVARCHAR(100),        --✅             -- Secteur d'activité
+    date_creation                   DATE,                 --✅           -- Date de création (converti depuis dd/mm/yyyy)
+    ville                           NVARCHAR(100),        --✅           -- Ville
+    pays                            NVARCHAR(100),        --✅         -- Pays
+    adresse                         NVARCHAR(500),        --✅          -- Adresse complète
+    type_client                     VARCHAR(20),          --✅          -- Type de client (ex: PME)
+    matricule_fiscale               VARCHAR(20),          --✅          -- Numéro matricule fiscal
+    identifiant_commande            VARCHAR(20),          --✅          -- Identifiant commande (ex: CMD173585)
+    date_premier_engagement         DATE,                 --✅          -- Date premier engagement
+    score_risque                    DECIMAL(3,1),         --✅          -- Score risque (ex: 5.0, 4.1)
+    note_interne                    NVARCHAR(50),         --✅          -- Note interne (Excellent, Très Bon, Bon, etc.)
+    date_mise_a_jour                DATE,                 --✅          -- Date de mise à jour
+    id_agence                       VARCHAR(20),          --✅          -- Identifiant agence (ex: CAF_1)
+    statut_client                   VARCHAR(20),          --✅          -- Statut client (Actif, Prospect)
+    chiffre_affaires_annuel         DECIMAL(15,2),        --✅          -- Chiffre d'affaires annuel
     effectif_employes               INT,                            -- Nombre d'employés
     niveau_endettement              DECIMAL(5,2),                   -- Niveau d'endettement (0.63, 0.4, etc.)
-    anciennete_relation_banque      TINYINT,                        -- Ancienneté relation banque (années)
+    anciennete_relation_banque      INT,                        -- Ancienneté relation banque (années)
     rating_externe                  VARCHAR(5),                     -- Rating externe (B, B+, A, C, C+)
-    is_cfc                          BIT,                            -- Booléen CFC (True/False -> 1/0)
-    anciennete_entreprise_mois      SMALLINT,                       -- Ancienneté entreprise en mois
-    anciennete_relation_mois        SMALLINT,                       -- Ancienneté relation en mois
-    nb_contacts_agence_mois         TINYINT,                        -- Nombre de contacts par mois
-    is_digital_user                 BIT,                            -- Utilisateur digital (True/False -> 1/0)
+    is_cfc                          NVARCHAR(100),                            -- Booléen CFC (True/False -> 1/0)
+    anciennete_entreprise_mois      INT,                       -- Ancienneté entreprise en mois
+    anciennete_relation_mois        INT,                       -- Ancienneté relation en mois
+    nb_contacts_agence_mois         INT,                        -- Nombre de contacts par mois
+    is_digital_user                 NVARCHAR(100),                            -- Utilisateur digital (True/False -> 1/0)
     digital_usage_pct               DECIMAL(5,1),                   -- Pourcentage d'usage digital
-    nb_connexions_digital_mois      TINYINT,                        -- Nombre de connexions digitales/mois
-    nb_transactions_mois            TINYINT,                        -- Nombre de transactions/mois
+    nb_connexions_digital_mois      INT,                        -- Nombre de connexions digitales/mois
+    nb_transactions_mois            INT,                        -- Nombre de transactions/mois
     montant_moyen_transaction       DECIMAL(12,2),                  -- Montant moyen par transaction
-    is_seasonal_business            BIT,                            -- Activité saisonnière (True/False -> 1/0)
+    is_seasonal_business            NVARCHAR(100),   ---❌                         -- Activité saisonnière (True/False -> 1/0)
     coefficient_saisonnalite        DECIMAL(5,2),                   -- Coefficient de saisonnalité
-    mois_pic_activite               TINYINT,                        -- Mois de pic d'activité (1-12)
-    nb_reclamations_an              TINYINT,                        -- Nombre de réclamations par an
-    nb_incidents_paiement           TINYINT,                        -- Nombre d'incidents de paiement
+    mois_pic_activite               NVARCHAR(100) , ---❌                       -- Mois de pic d'activité (1-12)
+    nb_reclamations_an              INT,                        -- Nombre de réclamations par an
+    nb_incidents_paiement           INT,                        -- Nombre d'incidents de paiement
     ca_par_employe                  DECIMAL(12,2),                  -- CA par employé
     croissance_ca_annuelle_pct      DECIMAL(6,2),                   -- Croissance CA annuelle en %
     niveau_endettement_declare      DECIMAL(6,3),                   -- Niveau d'endettement déclaré
-    volatilite_revenus              DECIMAL(5,3),                   -- Volatilité des revenus
-    
+    volatilite_revenus              DECIMAL(5,3)
 );
 GO
 --------------------------------------------------------------------------------------------------------------------------
