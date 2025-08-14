@@ -1,19 +1,19 @@
 /*
 ===================================================================================================================
-DDL Script ( Data Definition Language script) : Création des tables du schéma Bronze
+DDL Script ( Data Definition Language script) : Création des tables du schéma Silver
 ===================================================================================================================
 Objectif du script :
-    Ce script crée les tables dans le schéma 'bronze', en supprimant les tables 
+    Ce script crée les tables dans le schéma 'silver', en supprimant les tables 
     existantes si elles sont déja présentes.
-    Exécutez ce script pour redéfinir la structure DDL des tables du schéma 'bronze'.
+    Exécutez ce script pour redéfinir la structure DDL des tables du schéma 'silver'.
 ===================================================================================================================
 ===================================================================================================================
 DDL Script (Data Definition Language script): Creation of the Bronze Schema Tables
 ===================================================================================================================
 Script Objective:
-    This script creates the tables in the 'bronze' schema, dropping the existing tables
+    This script creates the tables in the 'silver' schema, dropping the existing tables
     if they are already present.
-    Run this script to redefine the DDL structure of the tables in the 'bronze' schema.
+    Run this script to redefine the DDL structure of the tables in the 'silver' schema.
 ===================================================================================================================
 */
 
@@ -457,8 +457,8 @@ CREATE TABLE silver.erp_produit_depot_info (
     _description            NVARCHAR(500),
     mode_versement_interet  NVARCHAR(100),
     unite_monetaire         NVARCHAR(10),
-    duree_blocage_min       NVARCHAR(50),
-    duree_blocage_max       NVARCHAR(50),
+    duree_blocage_min       INT,
+    duree_blocage_max       INT,
     taux_interet            DECIMAL(5,4),
     dwh_create_date DATETIME2 DEFAULT GETDATE()
 );
@@ -481,6 +481,10 @@ CREATE TABLE silver.erp_produit_cmlt_info (
     secteur_investissement          NVARCHAR(100),
     periode_remboursement_max_mois  INT,
     categorie_entreprise            NVARCHAR(100),
+    ME                              BIT,
+    PE                              BIT,
+    TPE                             BIT,
+    MRE                             BIT,
     dwh_create_date DATETIME2 DEFAULT GETDATE()
 );
 GO
@@ -531,17 +535,82 @@ GO
 CREATE TABLE silver.erp_metriques (
     id_metrique                 VARCHAR(50) NOT NULL,           -- Identifiant unique (ex: MET_CAF_1_ENT0000_2025-08)
     id_entreprise               VARCHAR(50) NOT NULL,           -- Référence vers l'entreprise (ex: CAF_1_ENT0000)
-    annee_mois                  CHAR(7) NOT NULL,               -- Format YYYY-MM (ex: 2025-08)
+    id_agence                   VARCHAR(50),
+    annee                       INT,
+    mois                        INT,
     solde_moyen_depot           DECIMAL(15,2),                  -- Solde moyen des dépôts
     utilisation_credit_pct      DECIMAL(6,2),                   -- Pourcentage d'utilisation du crédit
     nb_operations               INT,                       -- Nombre d'opérations dans le mois
     nb_contacts_agence          INT,                        -- Nombre de contacts avec l'agence
     nb_connexions_digital       INT,                        -- Nombre de connexions digitales
     satisfaction_score          DECIMAL(3,1),                   -- Score de satisfaction (ex: 4.2, 8.7)
-    retard_paiement             NVARCHAR(MAX),                   -- Retard de paiement (True/False -> 1/0)
-    nouveau_produit             NVARCHAR(MAX),                   -- Nouveau produit souscrit (True/False -> 1/0)
-    reclamation                 NVARCHAR(MAX),                -- Réclamation dans le mois (True/False -> 1/0)
-    dwh_create_date DATETIME2 DEFAULT GETDATE()
+    retard_paiement             BIT,                   -- Retard de paiement (True/False -> 1/0)
+    nouveau_produit             BIT,                   -- Nouveau produit souscrit (True/False -> 1/0)
+    reclamation                 BIT,                -- Réclamation dans le mois (True/False -> 1/0)
+    dwh_create_date             DATETIME2 DEFAULT GETDATE()
+);
+GO
+-----------------------------------------------------------------------------------------
+-------------- Fusion des tables en cours selon le produit des 6 agences ----------------
+-----------------------------------------------------------------------------------------
+
+IF OBJECT_ID('silver.crm_en_cours_depot_fusion', 'U') IS NOT NULL
+    DROP TABLE silver.crm_en_cours_depot_fusion;
+GO
+CREATE TABLE silver.crm_en_cours_depot_fusion (
+    id_en_cours         NVARCHAR(20),
+    id_agence           NVARCHAR(20),
+    id_entreprise       NVARCHAR(50),
+    id_produit          NVARCHAR(20),
+    devise              NVARCHAR(10),
+    source_donnee       NVARCHAR(20),
+    date_saisie_from_source         DATE,
+    statut              NVARCHAR(20),
+    solde               BIGINT,
+    taux_remuneration   DECIMAL(10,4),
+    periode             NVARCHAR(20),
+    dwh_date_insertion DATETIME2 DEFAULT GETDATE()
 );
 GO
 
+IF OBJECT_ID('silver.crm_en_cours_cmlt_fusion', 'U') IS NOT NULL
+    DROP TABLE silver.crm_en_cours_cmlt_fusion;
+GO
+CREATE TABLE silver.crm_en_cours_cmlt_fusion (
+    id_en_cours         NVARCHAR(20),
+    id_agence           NVARCHAR(20),
+    id_entreprise       NVARCHAR(50),
+    id_produit          NVARCHAR(20),
+    devise              NVARCHAR(10),
+    source_donnee       NVARCHAR(20),
+    date_saisie         DATE,
+    statut              NVARCHAR(20),
+    montant_autorise    BIGINT,
+    déblockage          BIGINT,
+    amortisement        BIGINT,
+    solde               BIGINT,
+    taux_credit         DECIMAL(10,4),
+    periode             NVARCHAR(20),
+    dwh_date_insertion DATETIME2 DEFAULT GETDATE()
+);
+GO
+
+IF OBJECT_ID('silver.crm_en_cours_ldf_fusion', 'U') IS NOT NULL
+    DROP TABLE silver.crm_en_cours_ldf_fusion;
+GO
+CREATE TABLE silver.crm_en_cours_ldf_fusion (
+    id_en_cours       NVARCHAR(20),
+    id_agence         NVARCHAR(20),
+    id_entreprise     NVARCHAR(50),
+    id_produit        NVARCHAR(20),
+    devise            NVARCHAR(10),
+    source_donnee     NVARCHAR(20),
+    date_saisie       DATE,
+    statut            NVARCHAR(20),
+    montant_autorise  BIGINT,
+    solde             BIGINT,
+    taux_interet      DECIMAL(10,4),
+    periode             NVARCHAR(20),
+    dwh_date_insertion DATETIME2 DEFAULT GETDATE()
+);
+GO
