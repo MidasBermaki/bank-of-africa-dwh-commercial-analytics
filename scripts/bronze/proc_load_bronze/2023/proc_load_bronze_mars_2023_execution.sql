@@ -1,0 +1,1 @@
+EXEC proc_load_bronze_mars_2023;
