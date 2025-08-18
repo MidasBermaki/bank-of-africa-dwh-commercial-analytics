@@ -1,0 +1,1 @@
+EXEC gold.load_en_cours_tables_stage_area;
